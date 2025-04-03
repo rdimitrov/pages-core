@@ -1,3 +1,4 @@
+
 import fetch from './fetch';
 import alertActions from '../actions/alertActions';
 
@@ -21,7 +22,7 @@ function request(endpoint, params = {}, { handleHttpError = true } = {}) {
     headers,
   };
 
-  return fetch(url, finalParams).catch((error) => {
+  return fetch(url, finalParams).then(response => response.json()).catch((error) => {
     if (handleHttpError) {
       alertActions.httpError(error.message);
     } else {
@@ -70,18 +71,18 @@ export default {
   inviteToOrganization(id, data) {
     return request(`organization/${id}/invite`, {
       method: 'POST',
-      data,
+      body: JSON.stringify(data),
     });
   },
 
   updateOrganizationRole(organizationId, roleId, userId) {
     return request('organization-role', {
       method: 'PUT',
-      data: {
+      body: JSON.stringify({
         organizationId,
         roleId,
         userId,
-      },
+      }),
     });
   },
 
@@ -118,10 +119,10 @@ export default {
   createSiteDomain(siteId, names, siteBranchConfigId) {
     return request(`site/${siteId}/domain`, {
       method: 'POST',
-      data: {
+      body: JSON.stringify({
         names,
         siteBranchConfigId,
-      },
+      }),
     });
   },
 
@@ -138,10 +139,10 @@ export default {
   updateSiteDomain(siteId, domainId, { names, siteBranchConfigId } = {}) {
     return request(`site/${siteId}/domain/${domainId}`, {
       method: 'PUT',
-      data: {
+      body: JSON.stringify({
         names,
         siteBranchConfigId,
-      },
+      }),
     });
   },
 
@@ -158,10 +159,10 @@ export default {
       'site/user',
       {
         method: 'POST',
-        data: {
+        body: JSON.stringify({
           owner,
           repository,
-        },
+        }),
       },
       {
         // we want to handle the error elsewhere in order
@@ -186,7 +187,7 @@ export default {
       'site',
       {
         method: 'POST',
-        data: site,
+        body: JSON.stringify(site),
       },
       {
         handleHttpError: false,
@@ -199,7 +200,7 @@ export default {
       `site/${site.id}`,
       {
         method: 'PUT',
-        data,
+        body: JSON.stringify(data),
       },
       {
         handleHttpError: false,
@@ -220,21 +221,21 @@ export default {
   restartBuild(buildId, siteId) {
     return request('build/', {
       method: 'POST',
-      data: {
+      body: JSON.stringify({
         buildId,
         siteId,
-      },
+      }),
     });
   },
 
   createBuild(sha, branch, siteId) {
     return request('build/', {
       method: 'POST',
-      data: {
+      body: JSON.stringify({
         sha,
         siteId,
         branch,
-      },
+      }),
     });
   },
 
@@ -243,7 +244,7 @@ export default {
       'me/settings',
       {
         method: 'PUT',
-        data: userSettings,
+        body: JSON.stringify(userSettings),
       },
       {
         handleHttpError: false,
@@ -260,11 +261,11 @@ export default {
   createSiteBranchConfig(siteId, branch, config = {}, context) {
     return request(`site/${siteId}/branch-config`, {
       method: 'POST',
-      data: {
+      body: JSON.stringify({
         branch,
         config,
         context,
-      },
+      }),
     });
   },
 
@@ -275,11 +276,11 @@ export default {
   updateSiteBranchConfig(siteId, siteBranchConfigId, branch, config = {}, context) {
     return request(`site/${siteId}/branch-config/${siteBranchConfigId}`, {
       method: 'PUT',
-      data: {
+      body: JSON.stringify({
         branch,
         config,
         context,
-      },
+      }),
     });
   },
 
@@ -304,10 +305,10 @@ export default {
       `site/${siteId}/user-environment-variable`,
       {
         method: 'POST',
-        data: {
+        body: JSON.stringify({
           name: uev.name,
           value: uev.value,
-        },
+        }),
       },
       {
         handleHttpError: false,
@@ -332,10 +333,10 @@ export default {
       `site/${siteId}/basic-auth`,
       {
         method: 'POST',
-        data: {
+        body: JSON.stringify({
           username: credentials.username,
           password: credentials.password,
-        },
+        }),
       },
       {
         handleHttpError: false,
@@ -370,9 +371,9 @@ export default {
   updateSiteBuildTask(siteId, taskId, metadata, query = '') {
     return request(`/site/${siteId}/task/${taskId}${query}`, {
       method: 'PUT',
-      data: {
+      body: JSON.stringify({
         metadata,
-      },
+      }),
     });
   },
 
@@ -394,3 +395,5 @@ export default {
     return request(`tasks/${id}/report/${subPage || ''}`);
   },
 };
+
+// Rado: this should have probably done nothing, in the PR they just removed the prefixed / in some of the paths

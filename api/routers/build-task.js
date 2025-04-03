@@ -1,4 +1,4 @@
-const router = require('express').Router();
+const router = require('express').Router({ mergeParams: true });
 const BuildTaskController = require('../controllers/build-task');
 const BuildTaskTypeController = require('../controllers/build-task-type');
 const { sessionAuth } = require('../middlewares');
@@ -20,3 +20,5 @@ router.get('/tasks/default-rules', sessionAuth, BuildTaskTypeController.getDefau
 router.get('/tasks/:task_id/report/:sub_page?', sessionAuth, BuildTaskController.report);
 
 module.exports = router;
+
+// Rado: this should have removed the trailing ? from the route path and wrap it with {}, i.e. {:sub_page}
