@@ -3,7 +3,7 @@ const BuildLogController = require('../controllers/build-log');
 const { sessionAuth } = require('../middlewares');
 
 router.get(
-  '/build/:build_id/log(/offset/:offset)?',
+  '/build/:build_id/log{/offset/:offset}',
   sessionAuth,
   BuildLogController.find,
 );

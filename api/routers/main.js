@@ -13,6 +13,6 @@ router.get('/settings', csrfProtection, MainController.app);
 
 router.get('/robots.txt', MainController.robots);
 
-router.options('(/*)?', (_req, res) => res.notFound());
+router.options('(/*)?', (_req, res) => res.sendStatus(204));
 
 module.exports = router;
