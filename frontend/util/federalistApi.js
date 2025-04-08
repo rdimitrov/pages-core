@@ -1,4 +1,3 @@
-
 import fetch from './fetch';
 import alertActions from '../actions/alertActions';
 
